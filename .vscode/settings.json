@@ -5,6 +5,7 @@
     "*.controller.ts": "nest-controller",
     "*.decorator.ts": "nest-decorator",
     "*.guard.ts": "nest-guard",
-    "*.middleware.ts": "nest-middleware"
+    "*.middleware.ts": "nest-middleware",
+    "*.module.ts": "nest"
   }
 }
