@@ -15,11 +15,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  jobs      Job[]
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  jobs         Job[]
+  createdAt    DateTime @default(now())
+  refreshToken String?
 }
 
 model Job {
