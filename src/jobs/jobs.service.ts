@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateJobDto } from './dto/job.dto';
+import { UpdateJobDto } from './dto/update-job.dto';
 
 @Injectable()
 export class JobsService {
@@ -22,5 +23,22 @@ export class JobsService {
 
   async deleteJob(id: string) {
     return this.prisma.job.delete({ where: { id: id } });
+  }
+
+  async updateJob(jobId: string, userId: string, data: UpdateJobDto) {
+    const job = await this.prisma.job.findUnique({
+      where: { id: jobId },
+    });
+
+    if (!job || job.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this job.',
+      );
+    }
+
+    return this.prisma.job.update({
+      where: { id: jobId },
+      data,
+    });
   }
 }
