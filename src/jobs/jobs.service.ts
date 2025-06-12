@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateJobDto } from './dto/job.dto';
 
 @Injectable()
 export class JobsService {
@@ -13,5 +14,9 @@ export class JobsService {
     });
 
     return userWithJobs?.jobs;
+  }
+
+  async createJob(jobData: CreateJobDto) {
+    return this.prisma.job.create({ data: jobData });
   }
 }
