@@ -16,7 +16,7 @@ export class JobsService {
     return userWithJobs?.jobs;
   }
 
-  async createJob(jobData: CreateJobDto) {
-    return this.prisma.job.create({ data: jobData });
+  async createJob(jobData: CreateJobDto, userId: string) {
+    return this.prisma.job.create({ data: { ...jobData, userId } });
   }
 }

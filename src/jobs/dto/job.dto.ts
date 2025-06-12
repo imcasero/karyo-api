@@ -9,10 +9,6 @@ import {
 export class CreateJobDto {
   @IsString()
   @IsNotEmpty()
-  userId: string;
-
-  @IsString()
-  @IsNotEmpty()
   company: string;
 
   @IsString()
