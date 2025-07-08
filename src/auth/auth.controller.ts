@@ -6,7 +6,9 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ResponseDto } from './dto/response.dto'; // <-- Agrega esta línea
 import * as bcrypt from 'bcrypt';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -29,6 +31,8 @@ export class AuthController {
     });
   }
 
+  @ApiOperation({ summary: 'Login user' })
+  @ApiResponse({ status: 200, description: 'Login successful' })
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const tokens = await this.authService.login(loginDto);
@@ -36,6 +40,8 @@ export class AuthController {
     return res.status(HttpStatus.OK).json({ message: 'Login successful' });
   }
 
+  @ApiOperation({ summary: 'Register user' })
+  @ApiResponse({ status: 201, description: 'User registered' })
   @Post('register')
   async register(@Body() registerDto: RegisterDto, @Res() res: Response) {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
@@ -54,6 +60,8 @@ export class AuthController {
       .json({ id: user.id, email: user.email });
   }
 
+  @ApiOperation({ summary: 'Refresh tokens' })
+  @ApiResponse({ status: 200, description: 'Tokens refreshed' })
   @Post('refresh')
   async refresh(
     @Body() { refresh_token }: RefreshTokenDto,
