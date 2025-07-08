@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AuthModule } from './auth/auth.module';
+import { JobsModule } from './jobs/jobs.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,9 +17,11 @@ async function bootstrap() {
     .setTitle('Karyo API')
     .setDescription('API documentation for Karyo backend')
     .setVersion('1.0')
-    .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+
+  const document = SwaggerModule.createDocument(app, config, {
+    include: [JobsModule, AuthModule],
+  });
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);

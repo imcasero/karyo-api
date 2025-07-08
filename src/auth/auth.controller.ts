@@ -1,12 +1,25 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  HttpStatus,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { ResponseDto } from './dto/response.dto'; // <-- Agrega esta línea
 import * as bcrypt from 'bcrypt';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -70,5 +83,14 @@ export class AuthController {
     const tokens = await this.authService.refreshTokens(refresh_token);
     this.setAuthCookies(res, tokens);
     return res.status(HttpStatus.OK).json({ message: 'Tokens refreshed' });
+  }
+
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiResponse({ status: 200, description: 'Logged out successfully.' })
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Req() req) {
+    const userId = req.user.id;
+    return this.authService.logout(userId);
   }
 }
