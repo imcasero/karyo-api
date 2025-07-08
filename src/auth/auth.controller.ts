@@ -75,6 +75,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Refresh tokens' })
   @ApiResponse({ status: 200, description: 'Tokens refreshed' })
+  @UseGuards(JwtAuthGuard)
   @Post('refresh')
   async refresh(
     @Body() { refresh_token }: RefreshTokenDto,
