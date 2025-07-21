@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Req,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -93,5 +94,14 @@ export class AuthController {
   async logout(@Req() req) {
     const userId = req.user.id;
     return this.authService.logout(userId);
+  }
+
+  @ApiOperation({ summary: 'User data' })
+  @ApiResponse({ status: 200, description: 'User registered' })
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getUser(@Req() req) {
+    const userId = req.user.id;
+    return this.authService.getUser(userId);
   }
 }

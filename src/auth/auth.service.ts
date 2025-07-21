@@ -110,4 +110,11 @@ export class AuthService {
 
     return { message: 'Logged out successfully' };
   }
+
+  async getUser(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: id.toString() },
+    });
+    return user;
+  }
 }
