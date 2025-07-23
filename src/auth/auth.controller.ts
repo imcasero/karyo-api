@@ -14,12 +14,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import * as bcrypt from 'bcrypt';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 @ApiTags('auth')
@@ -100,8 +95,10 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User registered' })
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getUser(@Req() req) {
+  async getUser(@Req() req, @Res() res: Response) {
     const userId = req.user.id;
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
     return this.authService.getUser(userId);
   }
 }
