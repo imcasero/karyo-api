@@ -86,8 +86,10 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Logged out successfully.' })
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  async logout(@Req() req) {
+  async logout(@Req() req, @Res() res: Response) {
     const userId = req.user.id;
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
     return this.authService.logout(userId);
   }
 
@@ -95,10 +97,9 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User registered' })
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getUser(@Req() req, @Res() res: Response) {
+  async getUser(@Req() req) {
     const userId = req.user.id;
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+
     return this.authService.getUser(userId);
   }
 }

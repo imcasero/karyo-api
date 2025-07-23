@@ -115,6 +115,6 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { id: id.toString() },
     });
-    return user;
+    return { id: user.id, email: user.email };
   }
 }
