@@ -84,10 +84,9 @@ export class AuthService {
 
       const newRefreshToken = this.jwtService.sign(
         { sub: user.id, email: user.email },
-        { expiresIn: '7d', secret: process.env.JWT_REFRESH_SECRET },
+        { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
       );
 
-      // Actualizar el token en la base de datos
       await this.prisma.user.update({
         where: { id: user.id },
         data: { refreshToken: newRefreshToken },
@@ -115,6 +114,10 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { id: id.toString() },
     });
-    return { id: user.id, email: user.email };
+    const userView = {
+      id: user.id,
+      email: user.email,
+    };
+    return userView;
   }
 }

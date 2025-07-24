@@ -7,8 +7,9 @@ import {
   Req,
   UseGuards,
   Get,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -69,15 +70,17 @@ export class AuthController {
       .json({ id: user.id, email: user.email });
   }
 
+  @Post('refresh')
   @ApiOperation({ summary: 'Refresh tokens' })
   @ApiResponse({ status: 200, description: 'Tokens refreshed' })
-  @UseGuards(JwtAuthGuard)
-  @Post('refresh')
-  async refresh(
-    @Body() { refresh_token }: RefreshTokenDto,
-    @Res() res: Response,
-  ) {
-    const tokens = await this.authService.refreshTokens(refresh_token);
+  async refresh(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.cookies?.refresh_token || req.body?.refresh_token;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token not provided');
+    }
+
+    const tokens = await this.authService.refreshTokens(refreshToken);
     this.setAuthCookies(res, tokens);
     return res.status(HttpStatus.OK).json({ message: 'Tokens refreshed' });
   }
