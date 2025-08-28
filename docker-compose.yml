@@ -1,0 +1,22 @@
+# Docker Compose para PostgreSQL
+# Las variables de entorno se pueden definir en .env o usar los valores por defecto
+# Copia env.example a .env y ajusta los valores según necesites
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: karyo_postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin_local}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin_local}
+      POSTGRES_DB: ${DB_NAME:-karyo_db}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
