@@ -93,7 +93,8 @@ export class AuthController {
     const userId = req.user.id;
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
-    return this.authService.logout(userId);
+    const result = await this.authService.logout(userId);
+    return res.status(HttpStatus.OK).json(result);
   }
 
   @ApiOperation({ summary: 'User data' })
