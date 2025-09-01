@@ -18,7 +18,13 @@ export class JobsService {
   }
 
   async createJob(jobData: CreateJobDto, userId: string) {
-    return this.prisma.job.create({ data: { ...jobData, userId } });
+    return this.prisma.job.create({
+      data: {
+        ...jobData,
+        applicationDate: new Date(jobData.applicationDate),
+        userId,
+      },
+    });
   }
 
   async deleteJob(id: string) {
